@@ -4,6 +4,7 @@ const userRouter = express.Router();
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import dotenv from 'dotenv';
+import Authorization from "../Authorization.js";
 dotenv.config();
 
 userRouter.get("/", (req, res) => {
@@ -42,6 +43,46 @@ userRouter.post("/login", async (req, res) => {
         else {
             res.json({ message: "No User Found" });
         }
+    }
+})
+
+userRouter.post("/add-expense", async (req, res) => {
+    const AuthorizationResult = await Authorization(req.body.token)
+    console.log(AuthorizationResult);
+    if (AuthorizationResult) {
+        let User = await userModel.findOne({ _id: req.body._id })
+        User.expense.push({ expenseName: req.body.expenseName, expenseCategory: req.body.expenseCategory, expenseAmount: req.body.expenseAmount })
+        let UpdatedUser = await userModel.findOneAndUpdate({ _id: req.body._id }, User)
+        res.status(201).json({ message: "Expense Added" })
+    }
+    else {
+        res.json({ message: "Token error" })
+    }
+})
+
+userRouter.post("/add-income", async (req, res) => {
+    const AuthorizationResult = await Authorization(req.body.token)
+    if (AuthorizationResult) {
+        let User = await userModel.findOne({ _id: req.body._id })
+        User.income.push({ incomeName: req.body.incomeName, incomeAmount: req.body.incomeAmount })
+        let UpdatedUser = await userModel.findOneAndUpdate({ _id: req.body._id }, User)
+        res.status(201).json({ message: "Income Added" });
+    }
+    else {
+        res.json({ message: "Token error" })
+    }
+})
+
+userRouter.post("/add-investment", async (req, res) => {
+    const AuthorizationResult = await Authorization(req.body.token)
+    if (AuthorizationResult) {
+        let User = await userModel.findOne({ _id: req.body._id })
+        User.investment.push({ investmentName: req.body.investmentName, investmentCategory: req.body.investmentCategory, investedAmount: req.body.investedAmount })
+        let UpdatedUser = await userModel.findOneAndUpdate({ _id: req.body._id }, User)
+        res.status(201).json({ message: "New Investment Added" });
+    }
+    else {
+        res.json({ message: "Token error" })
     }
 })
 

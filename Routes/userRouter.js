@@ -11,6 +11,11 @@ userRouter.get("/", (req, res) => {
     res.json({ message: "userRouter is runnig correctly and responding well" })
 })
 
+userRouter.get("/getData/:id", async (req, res) => {
+    let result = await userModel.findOne({ _id: req.params.id })
+    res.json(result)
+})
+
 userRouter.post("/register", async (req, res) => {
     let { name, username, password, email } = req.body
     bcrypt.hash(password, 10, async (err, hash) => {

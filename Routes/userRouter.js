@@ -56,7 +56,7 @@ userRouter.post("/add-expense", async (req, res) => {
     console.log(AuthorizationResult);
     if (AuthorizationResult) {
         let User = await userModel.findOne({ _id: req.body._id })
-        User.expense.push({ expenseName: req.body.expenseName, expenseCategory: req.body.expenseCategory, expenseAmount: req.body.expenseAmount })
+        User.expense.push({ expenseName: req.body.expenseName, expenseCategory: req.body.expenseCategory, expenseAmount: req.body.expenseAmount, date: req.body.date })
         let UpdatedUser = await userModel.findOneAndUpdate({ _id: req.body._id }, User)
         res.status(201).json({ message: "Expense Added" })
     }
@@ -69,7 +69,7 @@ userRouter.post("/add-income", async (req, res) => {
     const AuthorizationResult = await Authorization(req.body.token)
     if (AuthorizationResult) {
         let User = await userModel.findOne({ _id: req.body._id })
-        User.income.push({ incomeName: req.body.incomeName, incomeAmount: req.body.incomeAmount })
+        User.income.push({ incomeName: req.body.incomeName, incomeAmount: req.body.incomeAmount ,date:req.body.date})
         let UpdatedUser = await userModel.findOneAndUpdate({ _id: req.body._id }, User)
         res.status(201).json({ message: "Income Added" });
     }
@@ -82,7 +82,7 @@ userRouter.post("/add-investment", async (req, res) => {
     const AuthorizationResult = await Authorization(req.body.token)
     if (AuthorizationResult) {
         let User = await userModel.findOne({ _id: req.body._id })
-        User.investment.push({ investmentName: req.body.investmentName, investmentCategory: req.body.investmentCategory, investedAmount: req.body.investedAmount })
+        User.investment.push({ investmentName: req.body.investmentName, investmentCategory: req.body.investmentCategory, investedAmount: req.body.investedAmount,date:req.body.date })
         let UpdatedUser = await userModel.findOneAndUpdate({ _id: req.body._id }, User)
         res.status(201).json({ message: "New Investment Added" });
     }
